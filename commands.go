@@ -18,13 +18,13 @@ func cleanInput(text string) []string {
 	return strings.Fields(text)
 }
 
-func commandExit(pokemon_data *API_locations, cache *pokecache.Cache) error {
+func commandExit(pokemon_data *API_locations, cache *pokecache.Cache, param string) error {
 	fmt.Println("Closing the Pokedex... Goodbye!")
 	os.Exit(0)
 	return nil
 }
 
-func commandHelp(pokemon_data *API_locations, cache *pokecache.Cache) error {
+func commandHelp(pokemon_data *API_locations, cache *pokecache.Cache, param string) error {
 	fmt.Println()
 	fmt.Println("Welcome to the Pokedex!")
 	fmt.Println("Usage:")
@@ -37,8 +37,8 @@ func commandHelp(pokemon_data *API_locations, cache *pokecache.Cache) error {
 	return nil
 }
 
-func commandMap(pokemon_data *API_locations, cache *pokecache.Cache) error {
-	locations, err := get_request("GET", pokemon_data.Next, cache)
+func commandMap(pokemon_data *API_locations, cache *pokecache.Cache, param string) error {
+	locations, err := get_request[API_locations]("GET", pokemon_data.Next, cache)
 	if err != nil {
 		return err
 	}
@@ -53,13 +53,13 @@ func commandMap(pokemon_data *API_locations, cache *pokecache.Cache) error {
 	return nil
 }
 
-func commandMapb(pokemon_data *API_locations, cache *pokecache.Cache) error {
+func commandMapb(pokemon_data *API_locations, cache *pokecache.Cache, param string) error {
 	if pokemon_data.Previous == "" {
 		fmt.Println("you're on the first page")
 		return nil
 	}
 
-	locations, err := get_request("GET", pokemon_data.Previous, cache)
+	locations, err := get_request[API_locations]("GET", pokemon_data.Previous, cache)
 	if err != nil {
 		return err
 	}
@@ -69,6 +69,21 @@ func commandMapb(pokemon_data *API_locations, cache *pokecache.Cache) error {
 
 	for _, location := range locations.Results {
 		fmt.Println(location.Name)
+	}
+
+	return nil
+}
+
+func commandExplore(pokemon_data *API_locations, cache *pokecache.Cache, param string) error {
+	explore_url := "https://pokeapi.co/api/v2/location-area/" + param
+
+	location, err := get_request[API_explore]("GET", explore_url, cache)
+	if err != nil {
+		return err
+	}
+
+	for _, pokemon := range location.PokemonEncounters {
+		fmt.Println(pokemon.Pokemon.Name)
 	}
 
 	return nil

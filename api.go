@@ -8,15 +8,15 @@ import (
 	"github.com/Ondroidd/pokedex/internal/pokecache"
 )
 
-func get_request(method string, url string, cache *pokecache.Cache) (API_locations, error) {
-	var pokemon_data API_locations
+func get_request[T any](method string, url string, cache *pokecache.Cache) (T, error) {
+	var pokemon_data T
 
 	// Use cached data if available
 	cache_data, ok := cache.Get(url)
 	if ok {
 		err := json.Unmarshal(cache_data, &pokemon_data)
 		if err != nil {
-			return API_locations{}, err
+			return pokemon_data, err
 		}
 		return pokemon_data, nil
 	}
@@ -26,12 +26,12 @@ func get_request(method string, url string, cache *pokecache.Cache) (API_locatio
 
 	req, err := http.NewRequest(method, url, nil)
 	if err != nil {
-		return API_locations{}, err
+		return pokemon_data, err
 	}
 
 	res, err := client.Do(req)
 	if err != nil {
-		return API_locations{}, err
+		return pokemon_data, err
 	}
 
 	defer res.Body.Close()
@@ -39,13 +39,13 @@ func get_request(method string, url string, cache *pokecache.Cache) (API_locatio
 	decoder := json.NewDecoder(res.Body)
 
 	if err := decoder.Decode(&pokemon_data); err != nil {
-		return API_locations{}, err
+		return pokemon_data, err
 	}
 
 	// Add data to cache
 	to_cache, err := json.Marshal(pokemon_data)
 	if err != nil {
-		return API_locations{}, err
+		return pokemon_data, err
 	}
 	cache.Add(url, to_cache)
 

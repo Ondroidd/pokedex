@@ -32,12 +32,16 @@ func main() {
 			continue
 		}
 
+		var param string
 		command := clean_input[0]
+		if len(clean_input) > 1 {
+			param = clean_input[1]
+		}
 
 		if cmd, ok := commands[command]; !ok {
 			fmt.Println("Unknown commannd")
 		} else {
-			err := cmd.callback(pokemon_data, cache_data)
+			err := cmd.callback(pokemon_data, cache_data, param)
 			if err != nil {
 				fmt.Println(err)
 			}
