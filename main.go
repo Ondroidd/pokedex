@@ -7,6 +7,15 @@ import (
 )
 
 func main() {
+	baseURL := "https://pokeapi.co/api/v2/location-area/"
+	parsed_url, err := parse_url(baseURL)
+	if err != nil {
+		fmt.Printf("URL parsing failed: %s", err)
+		return
+	}
+
+	pokemon_data := &API_locations{Next: parsed_url}
+
 	scanner := bufio.NewScanner(os.Stdin)
 
 	for {
@@ -24,7 +33,7 @@ func main() {
 		if cmd, ok := commands[command]; !ok {
 			fmt.Println("Unknown commannd")
 		} else {
-			err := cmd.callback()
+			err := cmd.callback(pokemon_data)
 			if err != nil {
 				fmt.Println(err)
 			}
