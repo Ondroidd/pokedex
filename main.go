@@ -4,6 +4,9 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"time"
+
+	"github.com/Ondroidd/pokedex/internal/pokecache"
 )
 
 func main() {
@@ -14,6 +17,7 @@ func main() {
 		return
 	}
 
+	cache_data := pokecache.NewCache(120 * time.Second)
 	pokemon_data := &API_locations{Next: parsed_url}
 
 	scanner := bufio.NewScanner(os.Stdin)
@@ -33,7 +37,7 @@ func main() {
 		if cmd, ok := commands[command]; !ok {
 			fmt.Println("Unknown commannd")
 		} else {
-			err := cmd.callback(pokemon_data)
+			err := cmd.callback(pokemon_data, cache_data)
 			if err != nil {
 				fmt.Println(err)
 			}

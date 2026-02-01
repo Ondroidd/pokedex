@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"os"
 	"strings"
+
+	"github.com/Ondroidd/pokedex/internal/pokecache"
 )
 
 func cleanInput(text string) []string {
@@ -16,13 +18,13 @@ func cleanInput(text string) []string {
 	return strings.Fields(text)
 }
 
-func commandExit(pokemon_data *API_locations) error {
+func commandExit(pokemon_data *API_locations, cache *pokecache.Cache) error {
 	fmt.Println("Closing the Pokedex... Goodbye!")
 	os.Exit(0)
 	return nil
 }
 
-func commandHelp(pokemon_data *API_locations) error {
+func commandHelp(pokemon_data *API_locations, cache *pokecache.Cache) error {
 	fmt.Println()
 	fmt.Println("Welcome to the Pokedex!")
 	fmt.Println("Usage:")
@@ -35,8 +37,8 @@ func commandHelp(pokemon_data *API_locations) error {
 	return nil
 }
 
-func commandMap(pokemon_data *API_locations) error {
-	locations, err := get_request("GET", pokemon_data.Next)
+func commandMap(pokemon_data *API_locations, cache *pokecache.Cache) error {
+	locations, err := get_request("GET", pokemon_data.Next, cache)
 	if err != nil {
 		return err
 	}
@@ -51,13 +53,13 @@ func commandMap(pokemon_data *API_locations) error {
 	return nil
 }
 
-func commandMapb(pokemon_data *API_locations) error {
+func commandMapb(pokemon_data *API_locations, cache *pokecache.Cache) error {
 	if pokemon_data.Previous == "" {
 		fmt.Println("you're on the first page")
 		return nil
 	}
 
-	locations, err := get_request("GET", pokemon_data.Previous)
+	locations, err := get_request("GET", pokemon_data.Previous, cache)
 	if err != nil {
 		return err
 	}

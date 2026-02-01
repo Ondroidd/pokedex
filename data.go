@@ -1,11 +1,13 @@
 package main
 
+import "github.com/Ondroidd/pokedex/internal/pokecache"
+
 var commands map[string]cliCommand
 
 type cliCommand struct {
 	name        string
 	description string
-	callback    func(*API_locations) error
+	callback    func(*API_locations, *pokecache.Cache) error
 }
 
 type API_locations struct {
