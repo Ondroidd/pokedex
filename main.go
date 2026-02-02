@@ -19,6 +19,7 @@ func main() {
 
 	cache_data := pokecache.NewCache(120 * time.Second)
 	pokemon_data := &API_locations{Next: parsed_url}
+	pokedex := make(map[string]API_pokemon)
 
 	scanner := bufio.NewScanner(os.Stdin)
 
@@ -32,16 +33,16 @@ func main() {
 			continue
 		}
 
-		var param string
+		var area string
 		command := clean_input[0]
 		if len(clean_input) > 1 {
-			param = clean_input[1]
+			area = clean_input[1]
 		}
 
 		if cmd, ok := commands[command]; !ok {
 			fmt.Println("Unknown commannd")
 		} else {
-			err := cmd.callback(pokemon_data, cache_data, param)
+			err := cmd.callback(pokemon_data, cache_data, area, pokedex)
 			if err != nil {
 				fmt.Println(err)
 			}
