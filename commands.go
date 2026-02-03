@@ -137,3 +137,12 @@ func commandInspect(pokemon_data *API_locations, cache *pokecache.Cache, pokemon
 
 	return nil
 }
+
+func commandPokedex(pokemon_data *API_locations, cache *pokecache.Cache, pokemon string, pokedex map[string]API_pokemon) error {
+	fmt.Printf("Your Pokedex:\n")
+	for _, pokemon := range pokedex {
+		fmt.Printf(" - %v\n", pokemon.Name)
+	}
+
+	return nil
+}
